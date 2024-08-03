@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planilha de Procedimentos</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        input {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h1>Planilha de Procedimentos Diários</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Valor Químicas</th>
+                <th>Valor Outros Procedimentos</th>
+                <th>Valor Total</th>
+                <th>Valor Químicas Percentual</th>
+                <th>Valor Outros Procedimentos Percentual</th>
+                <th>Valor Diário Percentual</th>
+            </tr>
+        </thead>
+        <tbody id="data-body">
+            <tr>
+                <td><input type="date" class="date"></td>
+                <td><input type="number" class="chemicals" onchange="calculateValues()"></td>
+                <td><input type="number" class="other-procedures" onchange="calculateValues()"></td>
+                <td><input type="text" class="total" readonly></td>
+                <td><input type="text" class="chemicals-percent" readonly></td>
+                <td><input type="text" class="other-procedures-percent" readonly></td>
+                <td><input type="text" class="daily-percent" readonly></td>
+            </tr>
+        </tbody>
+    </table>
+    <button onclick="addRow()">Adicionar Linha</button>
+    <h2>Total Geral do Mês: <span id="monthly-total">0</span></h2>
+
+    <script>
+        function calculateValues() {
+            const rows = document.querySelectorAll('#data-body tr');
+            let totalMonthly = 0;
+
+            rows.forEach(row => {
+                const chemicalsInput = row.querySelector('.chemicals');
+                const otherProceduresInput = row.querySelector('.other-procedures');
+                const totalInput = row.querySelector('.total');
+                const chemicalsPercentInput = row.querySelector('.chemicals-percent');
+                const otherProceduresPercentInput = row.querySelector('.other-procedures-percent');
+                const dailyPercentInput = row.querySelector('.daily-percent');
+
+                const chemicals = parseFloat(chemicalsInput.value) || 0;
+                const otherProcedures = parseFloat(otherProceduresInput.value) || 0;
+
+                const total = chemicals + otherProcedures;
+                const chemicalsPercent = chemicals * 0.35;
+                const otherProceduresPercent = otherProcedures * 0.50;
+                const dailyPercent = chemicalsPercent + otherProceduresPercent;
+
+                totalInput.value = total.toFixed(2);
+                chemicalsPercentInput.value = chemicalsPercent.toFixed(2);
+                otherProceduresPercentInput.value = otherProceduresPercent.toFixed(2);
+                dailyPercentInput.value = dailyPercent.toFixed(2);
+
+                totalMonthly += dailyPercent;
+            });
+
+            document.getElementById('monthly-total').textContent = totalMonthly.toFixed(2);
+        }
+
+        function addRow() {
+            const tableBody = document.getElementById('data-body');
+            const newRow = document.createElement('tr');
+
+            newRow.innerHTML = `
+                <td><input type="date" class="date"></td>
+                <td><input type="number" class="chemicals" onchange="calculateValues()"></td>
+                <td><input type="number" class="other-procedures" onchange="calculateValues()"></td>
+                <td><input type="text" class="total" readonly></td>
+                <td><input type="text" class="chemicals-percent" readonly></td>
+                <td><input type="text" class="other-procedures-percent" readonly></td>
+                <td><input type="text" class="daily-percent" readonly></td>
+            `;
+
+            tableBody.appendChild(newRow);
+        }
+    </script>
+</body>
+</html>
